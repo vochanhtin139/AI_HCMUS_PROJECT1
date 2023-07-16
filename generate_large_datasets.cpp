@@ -9,7 +9,7 @@ int main() {
     srand(time(NULL));
 
     for(int i = 6; i <= 10; i++) {
-        string file = "OUTPUT_" + to_string(i) + ".txt";
+        string file = "INPUT_" + to_string(i) + ".txt";
         ofstream output(file);
 
         int n, W, m;
