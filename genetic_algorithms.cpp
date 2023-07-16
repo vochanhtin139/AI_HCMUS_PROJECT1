@@ -7,7 +7,7 @@
 using namespace std;
 
 int W, m, n, total_fitness, size, generations;
-int w[100], v[100], c[100], fitness[100];
+int w[1000], v[1000], c[1000], fitness[1000];
 vector<vector<int> > population;
 
 void generate_random_population(int size) {
@@ -25,7 +25,7 @@ void generate_random_population(int size) {
 int calculate_fitness(vector<int> chromosome) {
     int total_weight = 0, total_value = 0;
 
-    int mark[50]; // check select full class
+    int mark[20]; // check select full class
     for(int i = 1; i <= m; i++) 
         mark[i] = 0;
 
@@ -92,7 +92,7 @@ int main() {
     srand(time(NULL));
 
     // read input
-    freopen("test.inp", "r", stdin);
+    freopen("OUTPUT_10.txt", "r", stdin);
     
     cin >> n >> W >> m;
     for(int i = 0; i < n; i++)
