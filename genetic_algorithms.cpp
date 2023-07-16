@@ -117,6 +117,9 @@ int main() {
         int c1 = select_chromosome();
         int c2 = select_chromosome();
 
+        if (c1 == -1 || c2 == -1)
+            continue;
+
         crossover(c1, c2);
 
         mutate(population[c1]);
