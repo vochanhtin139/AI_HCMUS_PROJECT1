@@ -25,13 +25,26 @@ void generate_random_population(int size) {
 
 int calculate_fitness(vector<int> chromosome) {
     int total_weight = 0, total_value = 0;
+
+    int mark[50]; // check select full class
+    for(int i = 1; i <= m; i++) 
+        mark[i] = 0;
+
     for(int i = 0; i < n; i++) 
         if (chromosome[i] == 1) {
             total_weight += w[i];
             total_value += v[i];
+            mark[c[i]] = 1;
         }
+
     if (total_weight > W) return 0;
-    else return total_value;
+
+    int num = 0;
+    for(int i = 1; i <= m; i++)
+        num += mark[i];
+    if (num < m) return 0;
+    
+    return total_value;
 }
 
 int select_chromosome() {
@@ -67,6 +80,7 @@ int get_best() {
     int maxf = INT_MIN;
     int pos = -1;
     for(int i = 0; i < size; i++) {
+        fitness[i] = calculate_fitness(population[i]);
         if (fitness[i] > maxf) {
             maxf = fitness[i];
             pos = i;
@@ -110,6 +124,12 @@ int main() {
     }
 
     int res = get_best();
+
+    if (fitness[res] == 0) {
+        cout << "No solution";
+        return 0;
+    }
+
     cout << fitness[res] << endl;
     for(int i = 0; i < n; i++)
         cout << population[res][i] << " ";
