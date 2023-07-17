@@ -1,8 +1,11 @@
 #include <iostream>
+#include <fstream>
 #include <cstring>
 #include <vector>
 #include <cstdlib>
 #include <ctime>
+#include <time.h>
+#include <cstring>
 
 using namespace std;
 
@@ -98,20 +101,7 @@ int get_best() {
     return pos;
 }
 
-int main() {
-    srand(time(NULL));
-
-    // read input
-    freopen("INPUT_6.txt", "r", stdin);
-    
-    cin >> n >> W >> m;
-    for(int i = 0; i < n; i++)
-        cin >> w[i];
-    for(int i = 0; i < n; i++)
-        cin >> v[i];
-    for(int i = 0; i < n; i++)
-        cin >> c[i];
-
+int genetic_algorithms() {
     size = 1000, generations = 10;
     generate_random_population(size);
 
@@ -137,14 +127,57 @@ int main() {
 
     int res = get_best();
 
-    if (fitness[res] == 0) {
-        cout << "No solution";
-        return 0;
-    }
+    return res;
+}
 
-    cout << fitness[res] << endl;
-    for(int i = 0; i < n; i++)
-        cout << population[res][i] << " ";
+int main() {
+    srand(time(NULL));
+
+    for(int test = 1; test <= 10; test++) {
+        // read input
+        string file_input = "INPUT_" + to_string(test) + ".txt";
+        ifstream input(file_input);
+        
+        input >> n >> W >> m;
+        for(int i = 0; i < n; i++)
+            input >> w[i];
+        for(int i = 0; i < n; i++)
+            input >> v[i];
+        for(int i = 0; i < n; i++)
+            input >> c[i];
+
+        clock_t start, end;
+        start = clock();
+
+        int res = genetic_algorithms();
+
+        end = clock();
+
+        double time_use = (double)(end - start) / CLOCKS_PER_SEC;
+
+        cout << "- Test " << test << ":\n";
+        cout << "Successful!\n";
+        cout << "Execution time: " << time_use << " second(s)\n\n";
+
+        // write output
+        string file_output = "OUTPUT_" + to_string(test) + ".txt";
+        ofstream output(file_output);
+        if (fitness[res] == 0) {
+            output << "No solution";
+
+            input.close();
+            output.close();
+            continue;
+        }
+
+        output << fitness[res] << endl;
+        for(int i = 0; i < n; i++)
+            output << population[res][i] << " ";
+
+        input.close();
+        output.close();
+    }
+    
     
     return 0;
 }
