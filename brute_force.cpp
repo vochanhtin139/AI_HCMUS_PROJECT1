@@ -1,5 +1,6 @@
 #include <iostream>
 #include <time.h>
+#include <fstream>
 
 using namespace std;
 
@@ -44,47 +45,58 @@ void Try(long long i, long long n, long long *wgts, long long *vls, long long *c
 }
 
 int main() {
-    cin >> n >> wgt >> cls;
-    
-    long long *wgts = new long long[n];
-    long long *vls = new long long[n];
-    long long *clss = new long long[n];
+    for (int i = 6; i <= 10; i++) {
+        string inpFileName = "INPUT_" + to_string(i) + ".txt";
+        ifstream inpFile(inpFileName);
 
-    for (int i = 0; i < n; i++)
-        cin >> wgts[i];
-    
-    for (int i = 0; i < n; i++)
-        cin >> vls[i];
+        inpFile >> n >> wgt >> cls;
+        
+        long long *wgts = new long long[n];
+        long long *vls = new long long[n];
+        long long *clss = new long long[n];
 
-    for (int i = 0; i < n; i++)
-        cin >> clss[i];
+        for (int i = 0; i < n; i++)
+            inpFile >> wgts[i];
+        
+        for (int i = 0; i < n; i++)
+            inpFile >> vls[i];
 
-    long long *cls_check = new long long[cls + 1];
-    long long *state = new long long[n];
-    long long *save_state = new long long[n];
-    for (int i = 0; i <= cls; i++) {
-        cls_check[i] = 0;
-        state[i] = 0;
-        save_state[i] = 0;
+        for (int i = 0; i < n; i++)
+            inpFile >> clss[i];
+
+        long long *cls_check = new long long[cls + 1];
+        long long *state = new long long[n];
+        long long *save_state = new long long[n];
+        for (int i = 0; i <= cls; i++) {
+            cls_check[i] = 0;
+            state[i] = 0;
+            save_state[i] = 0;
+        }
+
+        clock_t start, end;
+
+        start = clock();
+        Try(0, n, wgts, vls, clss, cls_check, state, save_state);
+        end = clock();
+
+        string outFileName = "OUTPUT_" + to_string(i) + ".txt";
+        ofstream outFile(outFileName);
+
+        outFile << "Executed time: " << (double) (end - start) / CLOCKS_PER_SEC << " second(s)" << endl;
+        outFile << "max value: " << max_value << endl;
+        for (int i = 0; i < n; i++)
+            outFile << save_state[i] << " ";
+
+        delete [] wgts;
+        delete [] vls;
+        delete [] clss;
+        delete [] cls_check;
+        delete [] state;
+        delete [] save_state;
+
+        inpFile.close();
+        outFile.clear();
     }
-
-    clock_t start, end;
-
-    start = clock();
-    Try(0, n, wgts, vls, clss, cls_check, state, save_state);
-    end = clock();
-
-    cout << "Executed time: " << (double) (end - start) / CLOCKS_PER_SEC << " second(s)" << endl;
-    cout << "max value: " << max_value << endl;
-    for (int i = 0; i < n; i++)
-        cout << save_state[i] << " ";
-
-    delete [] wgts;
-    delete [] vls;
-    delete [] clss;
-    delete [] cls_check;
-    delete [] state;
-    delete [] save_state;
 
     return 0;
 }
