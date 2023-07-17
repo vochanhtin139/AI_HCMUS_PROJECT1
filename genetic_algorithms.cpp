@@ -33,14 +33,24 @@ int calculate_fitness(vector<int> chromosome) {
         if (chromosome[i] == 1) {
             total_weight += w[i];
             total_value += v[i];
-            mark[c[i]] = 1;
+            mark[c[i]]++;
         }
 
-    if (total_weight > W) return 0;
+    if (total_weight > W) {
+        while (total_weight > W) {
+            int k = rand() % n;
+            while (chromosome[k] == 0)
+                k = rand() % n;
+            chromosome[k] = 0;
+            mark[c[k]]--;
+            total_weight -= w[k];
+            total_value -= v[k];
+        }
+    }
 
     int num = 0;
     for(int i = 1; i <= m; i++)
-        num += mark[i];
+        if (mark[i] > 0) num++;
     if (num < m) return 0;
     
     return total_value;
@@ -92,7 +102,7 @@ int main() {
     srand(time(NULL));
 
     // read input
-    freopen("OUTPUT_10.txt", "r", stdin);
+    freopen("INPUT_6.txt", "r", stdin);
     
     cin >> n >> W >> m;
     for(int i = 0; i < n; i++)
@@ -102,7 +112,7 @@ int main() {
     for(int i = 0; i < n; i++)
         cin >> c[i];
 
-    size = 100, generations = 10;
+    size = 1000, generations = 10;
     generate_random_population(size);
 
     total_fitness = 0;
