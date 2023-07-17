@@ -1,4 +1,5 @@
 #include <iostream>
+#include <time.h>
 
 using namespace std;
 
@@ -67,8 +68,13 @@ int main() {
         save_state[i] = 0;
     }
 
-    Try(0, n, wgts, vls, clss, cls_check, state, save_state);
+    clock_t start, end;
 
+    start = clock();
+    Try(0, n, wgts, vls, clss, cls_check, state, save_state);
+    end = clock();
+
+    cout << "Executed time: " << (double) (end - start) / CLOCKS_PER_SEC << " second(s)" << endl;
     cout << "max value: " << max_value << endl;
     for (int i = 0; i < n; i++)
         cout << save_state[i] << " ";
