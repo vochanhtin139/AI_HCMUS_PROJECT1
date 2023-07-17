@@ -135,7 +135,7 @@ int genetic_algorithms() {
 int main() {
     srand(time(NULL));
 
-    for(int test = 6; test <= 10; test++) {
+    for(int test = 1; test <= 10; test++) {
         // read input
         string file_input = "INPUT_" + to_string(test) + ".txt";
         ifstream input(file_input);

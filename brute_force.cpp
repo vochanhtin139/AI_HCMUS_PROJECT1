@@ -45,8 +45,8 @@ void Try(long long i, long long n, long long *wgts, long long *vls, long long *c
 }
 
 int main() {
-    for (int i = 6; i <= 10; i++) {
-        string inpFileName = "INPUT_" + to_string(i) + ".txt";
+    for (int test = 1; test <= 10; test++) {
+        string inpFileName = "INPUT_" + to_string(test) + ".txt";
         ifstream inpFile(inpFileName);
 
         inpFile >> n >> wgt >> cls;
@@ -79,11 +79,14 @@ int main() {
         Try(0, n, wgts, vls, clss, cls_check, state, save_state);
         end = clock();
 
-        string outFileName = "OUTPUT_" + to_string(i) + ".txt";
+        string outFileName = "OUTPUT_" + to_string(test) + ".txt";
         ofstream outFile(outFileName);
 
-        outFile << "Executed time: " << (double) (end - start) / CLOCKS_PER_SEC << " second(s)" << endl;
-        outFile << "max value: " << max_value << endl;
+        cout << "- Test " << test << ":\n";
+        cout << "Successful!\n";
+        cout << "Execution time: " << (double) (end - start) / CLOCKS_PER_SEC << " second(s)\n\n" << endl;
+        
+        outFile << max_value << endl;
         for (int i = 0; i < n; i++)
             outFile << save_state[i] << " ";
 
@@ -95,7 +98,7 @@ int main() {
         delete [] save_state;
 
         inpFile.close();
-        outFile.clear();
+        outFile.close();
     }
 
     return 0;
