@@ -76,6 +76,7 @@ int main() {
         }
 
         clock_t start, end;
+        max_value = 0, sum_weight = 0, sum_value = 0;
 
         start = clock();
         Try(0, n, sum_weight, sum_value, wgts, vls, clss, cls_check, state, save_state);
