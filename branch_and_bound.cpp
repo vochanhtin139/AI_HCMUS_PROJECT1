@@ -89,9 +89,12 @@ int main() {
         cout << "Successful!\n";
         cout << "Execution time: " << (double) (end - start) / CLOCKS_PER_SEC << " second(s)\n\n" << endl;
 
-        outFile << max_value << endl;
-        for (int i = 0; i < n; i++)
-            outFile << save_state[i] << " ";
+        if (max_value == 0) outFile << "No solution";
+        else {
+            outFile << max_value << endl;
+            for (int i = 0; i < n; i++)
+                outFile << save_state[i] << " ";
+        }
 
         delete [] wgts;
         delete [] vls;
