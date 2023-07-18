@@ -11,9 +11,6 @@ void print(long long n, long long &sum_weight, long long &sum_value, long long *
         if (!cls_check[i])
             return;
 
-    if (sum_value == 164)
-        cout << "MAX WEIGHT: " << sum_weight;
-
     if (sum_value > max_value) {
         max_value = sum_value;
 
