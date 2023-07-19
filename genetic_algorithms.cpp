@@ -78,6 +78,9 @@ void crossover(int c1, int c2) {
     int random = rand() % n;
     for(int i = 0; i < random; i++)
         swap(parent1[i], parent2[i]);
+    
+    population[c1] = parent1;
+    population[c2] = parent2;
 }
 
 void mutate(vector<int> &chromosome) {
