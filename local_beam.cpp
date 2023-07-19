@@ -50,7 +50,7 @@ bool isEqualCandidate(Candidate addCandidate, vector<Candidate> nextCandidate) {
 vector<Candidate> generateInitialCandidate(int n, int beamWidth, const vector<Item>& items, int capacity) {
     vector<Candidate> initialCandidate;
 
-    while (initialCandidate.size() < beamWidth) {
+   for (int i = 0; i < beamWidth; i++) {
         vector<int> knapsack(n , 0);
         for (int j  = 0; j < n; j++) {
             knapsack[j] = rand() % 2; // Random binary selection
@@ -76,7 +76,7 @@ vector<Candidate> generateNextCandidate(const Candidate& candidate, int n, int b
         addCandidate.knapsack = nextKnapsack;
         addCandidate.value = 0;
         addCandidate.classCounts = vector<int>(); 
-        if (!isOverWeight(addCandidate, items, capacity)) nextCandidate.push_back(addCandidate);
+        nextCandidate.push_back(addCandidate);
     }
 
     return nextCandidate;
@@ -117,9 +117,17 @@ bool Comparator(Candidate a, Candidate b) {
     return a.value > b.value;
 }
 
-vector<int> localBeamSearch(const vector<Item>& items, int capacity, int beamWidth, int maxSteps) {
+vector<int> localBeamSearch(const vector<Item>& items, int capacity, int beamWidth, int maxSteps, string file_output, int test) {
     int n = items.size();
     vector<Candidate> curCandidates = generateInitialCandidate(n, beamWidth, items, capacity);
+
+    if (curCandidates.empty()) {
+        ofstream output(file_output);
+        output << 0 << endl;
+        for (int i = 0; i < n; i++) output << 0 << " ";
+        output.close();
+        exit(1);
+    }
 
     for (int step = 0; step < maxSteps; step++) {
         vector<Candidate> nextCandidate;
@@ -144,63 +152,71 @@ vector<int> localBeamSearch(const vector<Item>& items, int capacity, int beamWid
 
 int main() {
     srand(time(NULL));
-    vector<Item> items;
-    vector<int> weights;
-    vector<int> values;
-    vector<int> classes;
 
-    int capacity = 101;
-    int beamWidth = 5;
-    int maxSteps = 1;
-    int totalValue = 0;
-    int classNum = 0;
-    int itemNum = 0;
-    int tempWeight = 0;
-    int tempValue = 0;
-    int tempClass = 0;
+    for (int test = 1; test <= 10; test++) {
+        vector<Item> items;
+        vector<int> weights;
+        vector<int> values;
+        vector<int> classes;
 
-    string file_input = "INPUT_3.txt";
-    ifstream input(file_input);
+        int totalValue = 0;
+        int capacity = 101;
+        int beamWidth = 10;
+        int maxSteps = 1;
+        int classNum = 0;
+        int itemNum = 0;
+        int tempWeight = 0;
+        int tempValue = 0;
+        int tempClass = 0;
 
-    input >> itemNum >> capacity >> classNum;
+        string file_input = "INPUT_" + to_string(test) + ".txt";
+        ifstream input(file_input);
 
-    for (int i = 0; i < itemNum; i++) {
-        input >> tempWeight;
-        weights.push_back(tempWeight);
+        input >> itemNum >> capacity >> classNum;
+
+        for (int i = 0; i < itemNum; i++) {
+            input >> tempWeight;
+            weights.push_back(tempWeight);
+        }
+        for (int i = 0; i < itemNum; i++) {
+            input >> tempValue;
+            values.push_back(tempValue);
+        }
+        for (int i = 0; i < itemNum; i++) {
+            input >> tempClass;
+            classes.push_back(tempClass);
+        }
+        for (int i = 0; i < itemNum; i++) {
+            Item item(weights[i], values[i], classes[i]);
+            items.push_back(item);
+        }
+        
+        // for (int i = 0; i < itemNum; i++)
+        //     cout << items[i].weight << " " << items[i].value << " " << items[i].classType << endl;
+
+        string file_output = "OUTPUT_" + to_string(test) + ".txt";
+        ofstream output(file_output);
+
+        double start = clock();
+        vector<int> bestKnapsack = localBeamSearch(items, capacity, beamWidth, maxSteps, file_output, test);
+        double end = clock();
+        double runtime = end - start;
+
+        for (int i = 0; i < bestKnapsack.size(); i++) {
+            if (bestKnapsack[i] == 1) {
+                totalValue += items[i].value;
+            } 
+        }
+
+        output << totalValue << endl;
+        for (int i = 0; i < bestKnapsack.size(); i++) {
+            output << bestKnapsack[i] << " ";
+        }
+
+        cout << endl << "Execution time: " << runtime/ 1000 << endl;
+       
+        output.close();
+        input.close();
     }
-    for (int i = 0; i < itemNum; i++) {
-        input >> tempValue;
-        values.push_back(tempValue);
-    }
-    for (int i = 0; i < itemNum; i++) {
-        input >> tempClass;
-        classes.push_back(tempClass);
-    }
-    for (int i = 0; i < 35; i++) {
-        Item item(weights[i], values[i], classes[i]);
-        items.push_back(item);
-    }
-    
-    // for (int i = 0; i < itemNum; i++)
-    //     cout << items[i].weight << " " << items[i].value << " " << items[i].classType << endl;
-
-    double start = clock();
-    vector<int> bestKnapsack = localBeamSearch(items, capacity, beamWidth, maxSteps);
-    double end = clock();
-    double runtime = end - start;
-
-    cout << "Selected items: ";
-    for (size_t i = 0; i < bestKnapsack.size(); i++) {
-        if (bestKnapsack[i] == 1) {
-            cout << i + 1 << " ";
-            totalValue += items[i].value;
-        } 
-    }
-
-    cout << endl << "Execution time: " << runtime/ 1000 << endl;
-    cout << totalValue;
-
-    input.close();
-
     return 0;
 }
