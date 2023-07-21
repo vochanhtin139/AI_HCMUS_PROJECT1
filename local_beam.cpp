@@ -5,6 +5,7 @@
 #include <time.h>
 #include <cstring>
 #include <fstream>
+#include <sstream>
 
 using namespace std;
 
@@ -150,6 +151,40 @@ vector<int> localBeamSearch(const vector<Item>& items, int capacity, int beamWid
     return curCandidates[0].knapsack;
 }
 
+void read_input(int test, vector<int>& weights, vector<int>& values, vector<int>& classes, int &capacity, int &classNum, int &itemNum) {
+    string file_input = "INPUT_" + to_string(test) + ".txt";
+    ifstream input(file_input);
+
+    int tempWeight = 0;
+    int tempValue = 0;
+    int tempClass = 0;
+
+    input >> capacity >> classNum;
+    itemNum = 0;
+    input.ignore();
+
+    string line;
+    getline(input, line);
+    istringstream ss(line);
+    int num;
+    while(ss >> num) {
+        tempWeight = num;
+        weights.push_back(tempWeight);
+        itemNum++;      
+    }
+
+    for(int i = 0; i < itemNum; i++) {
+        input >> tempValue;
+        values.push_back(tempValue);
+    }
+    for(int i = 0; i < itemNum; i++) {
+        input >> tempClass;
+        classes.push_back(tempClass);
+    }
+    
+    input.close();
+}
+
 int main() {
     srand(time(NULL));
 
@@ -165,27 +200,9 @@ int main() {
         int maxSteps = 1;
         int classNum = 0;
         int itemNum = 0;
-        int tempWeight = 0;
-        int tempValue = 0;
-        int tempClass = 0;
 
-        string file_input = "INPUT_" + to_string(test) + ".txt";
-        ifstream input(file_input);
-
-        input >> itemNum >> capacity >> classNum;
-
-        for (int i = 0; i < itemNum; i++) {
-            input >> tempWeight;
-            weights.push_back(tempWeight);
-        }
-        for (int i = 0; i < itemNum; i++) {
-            input >> tempValue;
-            values.push_back(tempValue);
-        }
-        for (int i = 0; i < itemNum; i++) {
-            input >> tempClass;
-            classes.push_back(tempClass);
-        }
+        read_input(test, weights, values, classes, capacity, classNum, itemNum);
+ 
         for (int i = 0; i < itemNum; i++) {
             Item item(weights[i], values[i], classes[i]);
             items.push_back(item);
@@ -216,7 +233,6 @@ int main() {
         cout << endl << "Execution time: " << runtime/ 1000 << endl;
        
         output.close();
-        input.close();
     }
     return 0;
 }
