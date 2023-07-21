@@ -1,6 +1,8 @@
 #include <iostream>
 #include <time.h>
 #include <fstream>
+#include <string>
+#include <sstream>
 
 using namespace std;
 
@@ -48,15 +50,22 @@ int main() {
     for (int test = 1; test <= 10; test++) {
         string inpFileName = "INPUT_" + to_string(test) + ".txt";
         ifstream inpFile(inpFileName);
+        string line;
 
-        inpFile >> n >> wgt >> cls;
-        
-        long long *wgts = new long long[n];
-        long long *vls = new long long[n];
-        long long *clss = new long long[n];
+        inpFile >> wgt >> cls;
+    
+        long long *wgts = new long long[50000];
+        long long *vls = new long long[50000];
+        long long *clss = new long long[50000];
 
-        for (int i = 0; i < n; i++)
-            inpFile >> wgts[i];
+        getline(inpFile, line);
+        getline(inpFile, line);
+        n = 0;
+        long long num;
+        istringstream iss(line);
+
+        while (iss >> num) 
+            wgts[n++] = num;
         
         for (int i = 0; i < n; i++)
             inpFile >> vls[i];
@@ -65,8 +74,8 @@ int main() {
             inpFile >> clss[i];
 
         long long *cls_check = new long long[cls + 1];
-        long long *state = new long long[n];
-        long long *save_state = new long long[n];
+        long long *state = new long long[50000];
+        long long *save_state = new long long[50000];
         for (int i = 0; i <= cls; i++) {
             cls_check[i] = 0;
             state[i] = 0;
