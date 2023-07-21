@@ -1,11 +1,11 @@
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <cstring>
 #include <vector>
 #include <cstdlib>
 #include <ctime>
 #include <time.h>
-#include <cstring>
 
 using namespace std;
 
@@ -135,21 +135,37 @@ int genetic_algorithms() {
     return res;
 }
 
+void read_input(int test) {
+    string file_input = "INPUT_" + to_string(test) + ".txt";
+    ifstream input(file_input);
+
+    input >> W >> m;
+    n = 0;
+    input.ignore();
+
+    string line;
+    getline(input, line);
+    istringstream ss(line);
+    int num;
+    while(ss >> num) {
+        w[n] = num;
+        n++;      
+    }
+
+    for(int i = 0; i < n; i++)
+        input >> v[i];
+    for(int i = 0; i < n; i++)
+        input >> c[i];
+    
+    input.close();
+}
+
 int main() {
     srand(time(NULL));
 
     for(int test = 1; test <= 10; test++) {
         // read input
-        string file_input = "INPUT_" + to_string(test) + ".txt";
-        ifstream input(file_input);
-        
-        input >> n >> W >> m;
-        for(int i = 0; i < n; i++)
-            input >> w[i];
-        for(int i = 0; i < n; i++)
-            input >> v[i];
-        for(int i = 0; i < n; i++)
-            input >> c[i];
+        read_input(test);
 
         clock_t start, end;
         start = clock();
@@ -169,8 +185,6 @@ int main() {
         ofstream output(file_output);
         if (fitness[res] == 0) {
             output << "No solution";
-
-            input.close();
             output.close();
             continue;
         }
@@ -179,7 +193,6 @@ int main() {
         for(int i = 0; i < n; i++)
             output << population[res][i] << " ";
 
-        input.close();
         output.close();
     }
     
